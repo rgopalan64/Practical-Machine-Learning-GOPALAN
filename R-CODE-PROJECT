@@ -1,0 +1,152 @@
+pmlproject2 <- function(directory) {
+  ## 'directory' is a character vector of length 1 indicating
+  ## the location of the CSV files
+  
+  setwd(directory)
+  
+  filerec <- read.csv("pml-training.csv",header=TRUE,na.strings="NA |  ", stringsAsFactors=FALSE)
+  # print(head(filerec,5))
+  
+  filerec2 <- data.frame(filerec)
+  NR <- nrow(filerec2)
+  Nlimit <- (NR/10)
+  NC <- ncol(filerec2)
+  print("NROWS = ")
+  print(NR)
+  print("NCOLS = ")
+  print(NC)
+  print("Nlimit")
+  print(Nlimit)
+  
+  # TRYING TO REMOVE COLS WITH ALL MISSING VALUES FROM FILEREC2
+  # BELOW TWO LINES WORKED.  First replace blanks with NA
+  filerec2[filerec2 == ""] <- NA
+  filerec2[filerec2 == NaN] <- NA
+  filerec2 <- filerec2[,colSums(is.na(filerec2)) == 0]
+  
+  NC2 <- ncol(filerec2)
+  print("NEW COLS=")
+  print(NC2)
+  print("NEW ROWS")
+  print(nrow(filerec2))
+  
+  # print(summary(filerec2))
+  
+  filerec2$newclasse[filerec2$classe == "A"] <- 1
+  filerec2$newclasse[filerec2$classe == "B"] <- 2
+  filerec2$newclasse[filerec2$classe == "C"] <- 3
+  filerec2$newclasse[filerec2$classe == "D"] <- 4
+  filerec2$newclasse[filerec2$classe == "E"] <- 5
+  
+  nums <- sapply(filerec2, is.numeric)
+  
+  # FILEREC3 contains ONLY the NUMERIC COLS in filerec2
+  filerec3 <- filerec2[nums]
+  print(ncol(filerec3))
+  set.seed(1)
+  inTrain <- createDataPartition(y = filerec3$newclasse, p = 0.05, list = FALSE)
+  training <- filerec3[inTrain, ]
+  print("NROW after random sample?")
+  print(nrow(training))
+
+  # testing <- filerec3[-inTrain, ]
+  
+  
+  yy <- training$newclasse
+  # sapply(yy, as.numeric)
+  
+  NC3 <- ncol(filerec3)
+  
+  for(j in 1: NC3){
+    if(training[, j] != training$newclasse){
+      xx <- training[, j]
+      sapply(xx, as.numeric)
+      # print(xx)
+      zz <- round(cor(xx,yy), digits = 6)
+      print(colnames(training)[j])
+      # print(training$classe)
+      print(zz)
+    }
+  }
+  
+  # NOW ADD BACK THE CLASSE FACTOR VARIABLE
+  print("NROWS in filerec2")
+  print(nrow(filerec2))
+  print("NROWS in filerec3")
+  print(nrow(filerec3))
+  
+  # CHANGE CLASSE AND NEWCLASSE TO FACTORS TO RUN TREE CLASSIFICATION METHODS
+  filerec3$classe <- filerec2[,"classe"]
+  filerec3$classe <- factor(filerec3$classe)
+  filerec3$newclasse <- factor(filerec3$newclasse)
+  print(levels(filerec3$newclasse))
+  
+  # create training and test sets once again after adding classe 
+  set.seed(1)
+  inTrain2 <- createDataPartition(y = filerec3$classe, p = 0.05, list = FALSE)
+  training2 <- filerec3[inTrain2, ]
+  
+  print("NROWS in TRAINING2")
+  print(nrow(training2))
+  testing2 <- filerec3[-inTrain2, ]
+  
+  # FIT A DECISION TREE
+  # modFit = train(classe ~ pitch_forearm+pitch_arm+magnet_belt_y+magnet_belt_z+accel_arm_x+ accel_forearm_x+ magnet_arm_x+ magnet_arm_y+ magnet_dumbbell_z+ magnet_forearm_x, method = "rpart", data=training2)
+  # SIMPLER TREE
+  # modFit = train(classe ~ pitch_forearm+ magnet_belt_y+ magnet_belt_z+ magnet_dumbbell_z, method = "rpart", data=training2)
+  # print(modFit$finalModel)
+  # predtree <- predict(modFit, newdata=testing2)
+  # testing2$predRight <- predtree == testing2$classe
+  # table(predtree, testing2$classe)
+  # print(summary(testing2$predRight))
+  
+  
+  
+  # NOW FIT A RANDOM FOREST MODEL
+  # modFit = randomForest(classe ~ pitch_forearm+pitch_arm+magnet_belt_y+magnet_belt_z+accel_arm_x+ accel_forearm_x+ magnet_arm_x+ magnet_arm_y+ magnet_dumbbell_z+ magnet_forearm_x, data=training2, mtry = 6, importance = TRUE)
+  # SIMPLER RANDOM FOREST WITH JUST 4 VARIABLES
+  modFit.rf = randomForest(classe ~ pitch_forearm+magnet_belt_y+ magnet_belt_z+ magnet_dumbbell_z, data=training2, mtry = 6, importance = TRUE)
+  importance(modFit.rf)
+  # NEXT TWO LINES PERTAIN TO USING RANDOM FOREST WITH THE CARET PACKAGE
+  # modFit <- train(classe ~ pitch_forearm+pitch_arm+magnet_belt_y+magnet_belt_z+accel_arm_x+ accel_forearm_x+ magnet_arm_x+ magnet_arm_y+ magnet_dumbbell_z+ magnet_forearm_x, data=training, method = "rf", PROX=TRUE)
+  # modFit
+  # modFit$finalModel
+  
+  
+  yhat.rf = predict(modFit.rf, type="response", newdata = testing2)
+  testing2$predRight <- (yhat.rf == testing2$classe)
+  print(summary(testing2$predRight))
+  print(table(yhat.rf, testing2$newclasse))
+  
+  
+  # NOW MAKE PREDICTIONS FOR NEW DATA SET
+  filetest <- read.csv("pml-testing.csv",header=TRUE,na.strings="NA |  ", stringsAsFactors=FALSE)
+  filetest2 <- data.frame(filetest)
+  
+  filetest2[filetest2 == ""] <- NA
+  filetest2[filetest2 == NaN] <- NA
+  
+  numstest <- sapply(filetest2, is.numeric)
+  
+  # FILETEST3 contains ONLY the NUMERIC COLS in filetest2
+  filetest3 <- filetest2[numstest]
+  
+  NCT <- ncol(filetest3)
+  for(j in 1: NCT){
+    colvect <- filetest3[,j]
+    impute.med(colvect)
+  }
+  # PREDICT WITH DECISION TREE
+  #predtree2 <- predict(modFit, newdata=filetest3)
+  #print(predtree2)
+  # PREDICT WITH RANDOM FOREST
+  predtree2 <- predict(modFit.rf, newdata=filetest3)
+  print(predtree2)
+}
+impute.med <- function(x){
+  z <- median(x, na.rm = TRUE)
+  # fills mssing values with medians
+  x[is.na(x)] <- z
+  return(x)
+  
+}
