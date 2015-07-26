@@ -56,7 +56,9 @@ Various machine learning algorithms were attempted in Phase 2.  The strategy can
 
 -        Create two feature sets, one SIMPLE (with 4 features) and one EXTENDED (with all the features identified at the end of Phase I).  The 4 features included in the simple model were pitch_forearm + magnet_belt_y + magnet_belt_z + magnet_dumbbell_z.  These 4 features were selected based upon their correlations with the classe variable.
 
--        Try various machine learning algorithms in combination with these feature sets.  I’ll report on two algorithms a) decision tree (the rpart method) and b) random forests (RandomForest method).
+Try various machine learning algorithms in combination with these feature sets.  
+I’ll report on two algorithms:
+a) decision tree (the rpart method) and b) random forests (RandomForest method).
 
  
 
@@ -82,19 +84,19 @@ SAMPLE OUTPUTS FROM A) DECISION TREE
 
 The decision tree algorithm provided a classification accuracy of only about 48%.
 
-Here is a cross-tabulation to illustrate:
+Here is a cross-tabulation to illustrate (predicted vs. actual values for the 5 classes):
 
 predtree                             A            B             C             D            E
 
        A                                    3309      650        278        207        256
 
-       B                                    431        582        23            45          60
+       B                                    431        582        23        45         60
 
-       C                                    709        1091      1554      624        473
+       C                                    709        1091      1554       624        473
 
        D                                   548        705        720        1567      657
 
-       E                                    304        579        675        612        1980
+       E                                    304        579        675        612       1980
 
  
 
@@ -102,19 +104,19 @@ B) PERFORMANCE OF RANDOM FORESTS
 
 The random forest algorithm did much better and provided a classification accuracy (for a test data set held out from the training sample) of about 68%.
 
-Here is some sample output from the random forest procedure.
+Here is some sample output from the random forest procedure (predicted vs. actual values for the 5 classes). The column headers are interpreted as A = 1, B = 2 and so on. yhat.rf is the predicted value (by Random Forest)
 
 yhat.rf                                               1             2             3             4             5
 
-      A                                                    4217      483        230        243        163
+      A                                                    4217      483        230              243        163
 
-      B                                                    494        1986      367        347        319
+      B                                                    494        1986      367              347        319
 
-      C                                                    142        617        2127      371        353
+      C                                                    142        617        2127            371        353
 
-      D                                                   270        367        397        1941      153
+      D                                                   270        367        397              1941      153
 
-      E                                                    178        154        129        153        2438
+      E                                                    178        154        129             153        2438
 
  
 
