@@ -1,12 +1,12 @@
-# Practical-Machine-Learning-GOPALAN
+# Practical-Machine-Learning
 Folder to submit the project for practical machine learning course
 Practical Machine Learning
 
 Project Write-up
 
-Submitted by Ram Gopalan
+Submitted by GRAMS
 
-Summary:  The purpose of this project is to use a machine learning algorithm to predict exercise mode.   Various sensors on the body of the person provide readings and these readings have to be used to predict the exercise mode.  In the dataset there are 5 exercise modes in the variable classe, titled A, B, C, D and E.   I spent MOST of the time cleaning up and understanding the data.  The raw data set had about 160 variables, but many of the columns contained no information at all.  Also, some of the variables were numeric, but many variables were qualitative (e.g., name of individual).  I took a two phase approach to the project (to be described below).  The best algorithm (for me) was a Random Forest algorithm, which provided a classification accuracy of about 68%.  This appears low, but given that there are 5 different classes in the classification problem, this degree of accuracy may in fact be reasonable.  I also tried a simple decision tree algorithm that did not do as well as the Random Forest algorithm.   For the test set, I’d expect a slightly lower classification accuracy, about 65%.
+Summary:  The purpose of this project is to use a machine learning algorithm to predict exercise mode.   Various sensors on the body of the person provide readings and these readings have to be used to predict the exercise mode.  In the dataset there are 5 exercise modes in the variable classe, titled A, B, C, D and E.   I spent MOST of the time cleaning up and understanding the data.  The raw data set had 160 variables, but many of the columns contained no information at all.  Also, some of the variables were numeric, but many variables were qualitative (e.g., name of individual).  I took a two phase approach to the project (to be described below).  The best algorithm (for me) was a Random Forest algorithm, which provided a classification accuracy of 94% for a TEST data set.  I also tried a simple decision tree algorithm that did not do as well as the Random Forest algorithm.
 
  
 
@@ -122,9 +122,9 @@ yhat.rf                                               1             2           
 
 PREDICTION FOR 20 TEST CASES:
 
-This final discussion pertains to the prediction for the 20 test cases provided in the project.  The best random forest algorithm was applied to these twenty cases.  I cannot say what the accuracy of the procedure is because classe is unknown, but the 20 predictions provided by the random forest algorithm are listed below:
+This final discussion pertains to the prediction for the 20 test cases provided in the project.  The best random forest algorithm was applied to these twenty cases.  Based upon the grade provided by COursera for the twenty test cases, this extended Random Forest algorithm, with all variables from the end of Phase I, provided 100% accuracy for the 20 test cases.
 
-A  B  A  A  A  C  D  C  A  A  B  B  B  A  E  B  E  B  D  B
+
 
  
 
